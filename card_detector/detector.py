@@ -20,8 +20,9 @@ from utils.torch_utils import select_device
 
 class CardInference:
 
-    def __init__(self, PATH_model:str, img_size:tuple=(512, 512), conf_thresh:float=0.25, iou_thresh:float=0.35, device:str='', hide_labels:bool=False, hide_conf:bool=False, view_img:bool=True, save_img:bool=True) -> None:
-        self.PATH_weights = PATH_model
+    def __init__(self, img_size:tuple=(512, 512), conf_thresh:float=0.25, iou_thresh:float=0.35, device:str='', hide_labels:bool=False, hide_conf:bool=False, view_img:bool=True, save_img:bool=True) -> None:
+        self.PATH_self_dir = os.path.dirname(os.path.realpath(__file__))
+        self.PATH_weights = os.path.join(self.PATH_self_dir, 'models\card_detection.pt')
         self.IMG_SIZE = img_size
         self.conf_thresh = conf_thresh
         self.iou_thresh = iou_thresh
@@ -86,7 +87,7 @@ class CardInference:
                     p1, p2 = (int(xyxy[0]), int(xyxy[1])), (int(xyxy[2]), int(xyxy[3]))
                     if (self.view_img):
                         cv2.rectangle(im0, p1, p2, (56, 56, 255), 3)
-                    predictions.append([p1, p2], conf)
+                    predictions.append([[p1, p2], conf])
 
             if self.view_img:
                 cv2.imshow(str('img'), im0)
@@ -102,8 +103,8 @@ class CardInference:
 if __name__ == '__main__':
 
     PATH_model = r"D:\Project\Python_Projects\projects\Yolov5_setup\yolov5\runs\train\exp8\weights\best.pt"
-    PATH_img = r"D:\Project\Python_Projects\projects\business_card_automation\Build_1\a_1_0\im.jpg"
+    PATH_img = r"D:\Project\Python_Projects\projects\business_card_automation\Data\dataset\demo_dataset\card (1).jpg"
 
     img = cv2.imread(PATH_img)
-    OBJ = CardInference(PATH_model)
+    OBJ = CardInference()
     OBJ.process(img)
